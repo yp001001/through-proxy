@@ -11,15 +11,15 @@
         <relativePath />
     </parent>
 
-    <groupId>org.dromara.neutrino-proxy</groupId>
-    <artifactId>neutrino-proxy</artifactId>
+    <groupId>org.dromara.through-proxy</groupId>
+    <artifactId>through-proxy</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
 
     <modules>
-        <module>neutrino-proxy-core</module>
-        <module>neutrino-proxy-client</module>
-        <module>neutrino-proxy-server</module>
+        <module>through-proxy-core</module>
+        <module>through-proxy-client</module>
+        <module>through-proxy-server</module>
     </modules>
 
     <properties>

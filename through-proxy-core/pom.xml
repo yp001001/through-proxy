@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>neutrino-proxy</artifactId>
-        <groupId>org.dromara.neutrino-proxy</groupId>
+        <artifactId>through-proxy</artifactId>
+        <groupId>org.dromara.through-proxy</groupId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>neutrino-proxy-core</artifactId>
+    <artifactId>through-proxy-core</artifactId>
 
     <dependencies>
         <!--solon aot start（用于 aot 时注册 native 元信息）-->
