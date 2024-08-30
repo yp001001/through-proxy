@@ -1,0 +1,57 @@
+package org.dromara.throughproxy.core.dispatcher;
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
+import lombok.extern.slf4j.Slf4j;
+import org.dromara.throughproxy.core.ProxyMessageHandler;
+import org.noear.solon.Solon;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+/**
+ * @author: yp
+ * @date: 2024/8/30 9:42
+ * @description:消息处理分发接口实现类
+ */
+@Slf4j
+public class DefaultDispatcher<Context, Data> implements Dispatcher<Context, Data> {
+
+    /**
+     * 调度器名称
+     */
+    private String name;
+
+    /**
+     * 缓存所有消息处理器
+     */
+    private Map<String, Handler<Context, Data>> handlerMap;
+
+    /**
+     * 获取对应handler函数接口
+     */
+    private Function<Data, String> matcher;
+
+
+    public DefaultDispatcher(String name, Function<Data, String> matcher) {
+        Assert.notNull(name, "name cannot empty!");
+        Assert.notNull(matcher, "matcher cannot empty!");
+        this.name = name;
+        this.matcher = matcher;
+        List<ProxyMessageHandler> proxyMessageHandlerList = Solon.context().getBeansOfType(ProxyMessageHandler.class);
+        if (!CollectionUtil.isEmpty(proxyMessageHandlerList)) {
+            for (ProxyMessageHandler proxyMessageHandler : proxyMessageHandlerList) {
+                Match match = proxyMessageHandler.getClass().getAnnotation(Match.class);
+                handlerMap.put(match.type(), (Handler<Context, Data>) proxyMessageHandler);
+            }
+        }
+    }
+
+
+    @Override
+    public void dispatch(Context context, Data data) {
+
+    }
+
+}

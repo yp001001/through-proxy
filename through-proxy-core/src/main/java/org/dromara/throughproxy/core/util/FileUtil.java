@@ -1,4 +1,4 @@
-package org.dromara.throughproxy.core.base.util;
+package org.dromara.throughproxy.core.util;
 
 import org.apache.commons.lang3.StringUtils;
 

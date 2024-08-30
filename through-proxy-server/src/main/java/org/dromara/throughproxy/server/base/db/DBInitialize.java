@@ -10,7 +10,6 @@ package org.dromara.throughproxy.server.base.db;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.throughproxy.core.base.util.FileUtil;
 import org.dromara.throughproxy.server.constant.DbTypeEnum;
@@ -23,13 +22,14 @@ import org.noear.solon.core.runtime.NativeDetector;
 import org.noear.wood.DbContext;
 import org.noear.wood.annotation.Db;
 
+import java.util.Arrays;
 import java.util.List;
 
 
 @Slf4j
 @Component
 public class DBInitialize implements EventListener<AppLoadEndEvent> {
-    private static List<String> initDataTableNameList = Lists.newArrayList("user", "license", "port_group", "port_pool", "port_mapping", "job_info");
+    private static List<String> initDataTableNameList = Arrays.asList("user", "license", "port_group", "port_pool", "port_mapping", "job_info");
     @Inject
     private DbConfig dbConfig;
 
