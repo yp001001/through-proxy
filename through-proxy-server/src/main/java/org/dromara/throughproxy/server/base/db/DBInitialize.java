@@ -11,7 +11,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.throughproxy.core.base.util.FileUtil;
+import org.dromara.throughproxy.core.util.FileUtil;
 import org.dromara.throughproxy.server.constant.DbTypeEnum;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Init;

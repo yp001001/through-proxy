@@ -1,5 +1,6 @@
 package org.dromara.throughproxy.server.base.proxy;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -48,6 +49,7 @@ public class ProxyConfiguration implements LifecycleBean {
 
     /**
      * 外部与服务端打交道
+     *
      * @param tcpServerBossGroup
      * @param tcpServerWorkerGroup
      * @param proxyConfig
@@ -75,6 +77,18 @@ public class ProxyConfiguration implements LifecycleBean {
                 });
         return bootstrap;
     }
+
+
+    @Bean("tunnelBossGroup")
+    public NioEventLoopGroup tunnelBossGroup(@Inject ProxyConfig proxyConfig){
+        return new NioEventLoopGroup(proxyConfig.getTunnel().getBossThreadCount());
+    }
+
+    @Bean("tunnelWorkerGroup")
+    public NioEventLoopGroup tunnelWorkerGroup(@Inject ProxyConfig proxyConfig){
+        return new NioEventLoopGroup(proxyConfig.getTunnel().getWorkThreadCount());
+    }
+
 
 
     @Override

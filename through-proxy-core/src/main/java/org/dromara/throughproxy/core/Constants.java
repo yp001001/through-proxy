@@ -1,8 +1,8 @@
 package org.dromara.throughproxy.core;
 
+import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 
-import java.nio.channels.Channel;
 
 /**
  * @author: yp
@@ -14,6 +14,11 @@ public interface Constants {
     AttributeKey<Channel> NEXT_CHANNEL = AttributeKey.newInstance("nxt_channel");
     AttributeKey<Integer> SERVER_PORT = AttributeKey.newInstance("serverPort");
     AttributeKey<Boolean> FLOW_LIMITER_FLAG = AttributeKey.newInstance("flowLimiterFlag");
+
+    int BYTE_LENGTH = 1;
+    int SERIALNUMBER_LENGTH = 8;
+
+    int INFO_LENGTH = 4;
 
     interface ProxyDataTypeName {
         String HEARTBEAT = "HEARTBEAT";
