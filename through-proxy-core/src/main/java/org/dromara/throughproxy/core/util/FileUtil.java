@@ -1,6 +1,8 @@
 package org.dromara.throughproxy.core.util;
 
+import jdk.nashorn.internal.runtime.regexp.joni.exception.InternalException;
 import org.apache.commons.lang3.StringUtils;
+import org.dromara.throughproxy.core.base.MetaDataConstant;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +12,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
-import static cn.hutool.core.io.FileUtil.getInputStream;
 
 /**
  *
@@ -24,31 +25,31 @@ public class FileUtil {
      * @param path
      * @return
      */
-//    public static InputStream getInputStream(String path) throws FileNotFoundException {
-//        if (StringUtils.isEmpty(path)) {
-//            throw new NullPointerException("path 不能为空!");
-//        }
-//        if (path.startsWith(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER)) {
-//            String subPath = path.substring(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER.length());
-//            return FileUtil.class.getResourceAsStream(subPath);
-//        }
-//        return new FileInputStream(path);
-//    }
+    public static InputStream getInputStream(String path) throws FileNotFoundException {
+        if (StringUtils.isEmpty(path)) {
+            throw new NullPointerException("path 不能为空!");
+        }
+        if (path.startsWith(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER)) {
+            String subPath = path.substring(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER.length());
+            return FileUtil.class.getResourceAsStream(subPath);
+        }
+        return new FileInputStream(path);
+    }
 
     /**
      * 根据文件路径获取输出流
      * @param path
      * @return
      */
-//    public static OutputStream getOutputStream(String path) throws FileNotFoundException {
-//        if (StringUtils.isEmpty(path)) {
-//            throw new NullPointerException("path 不能为空!");
-//        }
-//        if (path.startsWith(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER)) {
-//            throw new InternalException("不支持路径以'" + MetaDataConstant.CLASSPATH_IDENTIFIER + "'开头");
-//        }
-//        return new FileOutputStream(path);
-//    }
+    public static OutputStream getOutputStream(String path) throws FileNotFoundException {
+        if (StringUtils.isEmpty(path)) {
+            throw new NullPointerException("path 不能为空!");
+        }
+        if (path.startsWith(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER)) {
+            throw new InternalException("不支持路径以'" + MetaDataConstant.CLASSPATH_IDENTIFIER + "'开头");
+        }
+        return new FileOutputStream(path);
+    }
 
     /**
      * 读取文件内容
@@ -123,18 +124,18 @@ public class FileUtil {
         return baos.toByteArray();
     }
 
-//    public static void write(String path, String content) {
-////		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(path), StandardCharsets.UTF_8)){
-////			writer.write(content);
-////		} catch (Exception e) {
-////			e.printStackTrace();
-////		}
-//        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(getOutputStream(path)))){
-//            bw.write(content);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public static void write(String path, String content) {
+//		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(path), StandardCharsets.UTF_8)){
+//			writer.write(content);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(getOutputStream(path)))){
+            bw.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static File getDirectory(String path) {
         if (path.endsWith("/./")) {
