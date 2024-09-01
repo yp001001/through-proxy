@@ -43,13 +43,14 @@ public class ProxyMessageDecoder extends LengthFieldBasedFrameDecoder {
 
         if (infoLength != 0) {
             byte[] infoBytes = new byte[infoLength];
-            info = String.valueOf(byteBuf.readBytes(infoBytes));
+            byteBuf.readBytes(infoBytes);
+            info = new String(infoBytes);
         }
 
         byte[] data = null;
 
-        if (bodyLength != Constants.BYTE_LENGTH + Constants.INFO_LENGTH + Constants.SERIALNUMBER_LENGTH) {
-            int dataLength = bodyLength - Constants.BYTE_LENGTH - Constants.INFO_LENGTH - Constants.SERIALNUMBER_LENGTH;
+        if (bodyLength != Constants.BYTE_LENGTH + Constants.INFO_LENGTH + Constants.SERIALNUMBER_LENGTH + infoLength) {
+            int dataLength = bodyLength - Constants.BYTE_LENGTH - Constants.INFO_LENGTH - Constants.SERIALNUMBER_LENGTH - infoLength;
             data = new byte[dataLength];
             byteBuf.readBytes(data);
         }

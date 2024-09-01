@@ -46,11 +46,11 @@ public class ProxyConfig {
         // 数据长度修正
         private Integer lengthAdjustment;
         // 读空闲时间
-        private Integer readerIdleTime;
+        private Integer readIdleTime;
         // 写空闲时间
         private Integer writeIdleTime;
         // 规定时间既没有得到读事件，也没有得到写事件触发
-        private Integer allIdleTime;
+        private Integer allIdleTimeSeconds;
     }
 
 

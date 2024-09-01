@@ -105,6 +105,7 @@ public class ProxyClientService {
                             channel = channelFuture.channel();
                             // 连接成功，向服务器发送客户端认证信息
                             ProxyUtil.setCmdChannel(channel);
+                            log.info("客户端连接服务端成功... 开始发送Auth请求...");
                             channel.writeAndFlush(ProxyMessage.buildAuthMessage(proxyConfig.getTunnel().getLicenseKey(), ProxyUtil.getClientId()));
                             log.info("[CmdChannel] connect proxy server success. channelId:{}", channelFuture.channel().id().asLongText());
                             reconnectCount.set(0);

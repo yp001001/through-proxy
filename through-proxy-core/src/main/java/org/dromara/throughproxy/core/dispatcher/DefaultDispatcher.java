@@ -2,12 +2,15 @@ package org.dromara.throughproxy.core.dispatcher;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.hash.Hash;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.throughproxy.core.ProxyMessageHandler;
 import org.noear.solon.Solon;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -26,7 +29,7 @@ public class DefaultDispatcher<Context, Data> implements Dispatcher<Context, Dat
     /**
      * 缓存所有消息处理器
      */
-    private Map<String, Handler<Context, Data>> handlerMap;
+    private Map<String, Handler<Context, Data>> handlerMap = new HashMap<>();
 
     /**
      * 获取对应handler函数接口
@@ -51,7 +54,11 @@ public class DefaultDispatcher<Context, Data> implements Dispatcher<Context, Dat
 
     @Override
     public void dispatch(Context context, Data data) {
-
+        Handler<Context, Data> handler = handlerMap.get(matcher.apply(data));
+        if(Objects.isNull(handler)){
+            log.warn("proxymessageHandler is error, name is {}", matcher.apply(data));
+        }
+        handler.handle(context, data);
     }
 
 }

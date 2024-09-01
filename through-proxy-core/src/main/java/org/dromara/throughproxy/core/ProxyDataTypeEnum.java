@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 public enum ProxyDataTypeEnum {
 
     HEARTBEAT(0x01, Constants.ProxyDataTypeName.HEARTBEAT, "HEARTBEAT"),
+    AUTH(0x02, Constants.ProxyDataTypeName.AUTH, "AUTH"),
+
     ;
 
     private static final Map<Integer, ProxyDataTypeEnum> cache =

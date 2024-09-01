@@ -74,11 +74,11 @@ public class ProxyTunnelChannelHandler extends SimpleChannelInboundHandler<Proxy
                     if(ctx.channel().isWritable()){
                         // 读超时，断开连接
                         log.warn("[Tunnel Channel]Read timeout");
-                        ctx.channel().close();
+//                        ctx.channel().close();
                     }
                     break;
                 case WRITER_IDLE:
-                    ctx.channel().writeAndFlush(ProxyMessage.buildHeartbeatMessage());
+//                    ctx.channel().writeAndFlush(ProxyMessage.buildHeartbeatMessage());
                     break;
                 default:
                     break;

@@ -73,11 +73,11 @@ public class CmdChannelHandler extends SimpleChannelInboundHandler<ProxyMessage>
             switch (idleStateEvent.state()){
                 case READER_IDLE:
                     log.error("[CMD Channel] Read timeout disconnect");
-                    ctx.channel().close();
+//                    ctx.channel().close();
                     break;
                 case WRITER_IDLE:
                     // 发送心跳防止读超时
-                    ctx.channel().writeAndFlush(ProxyMessage.buildHeartbeatMessage());
+//                    ctx.channel().writeAndFlush(ProxyMessage.buildHeartbeatMessage());
                     break;
                 default:
                     log.error("[CMD Channel] ReadWrite timeout disconnect");

@@ -23,9 +23,6 @@ public class VisitorChannelService {
     @Inject("tcpServerBootstrap")
     private ServerBootstrap tcpServerBootstrap;
 
-    @Inject("udpServerBootstrap")
-    private Bootstrap udpServerBootstrap;
-
     @Inject
     private ProxyMutualService proxyMutualService;
 

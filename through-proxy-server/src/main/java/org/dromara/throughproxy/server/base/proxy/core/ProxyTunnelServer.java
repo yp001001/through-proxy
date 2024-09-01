@@ -1,7 +1,6 @@
 package org.dromara.throughproxy.server.base.proxy.core;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -55,7 +54,7 @@ public class ProxyTunnelServer implements EventListener<AppLoadEndEvent> {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(tunnelBossGroup, tunnelWorkerGroup)
                 .channel(NioServerSocketChannel.class)
-                .handler(new ChannelInitializer<SocketChannel>() {
+                .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         proxyServerCommonInitHandler(socketChannel);
@@ -85,7 +84,7 @@ public class ProxyTunnelServer implements EventListener<AppLoadEndEvent> {
                 protocol.getLengthFieldLength(), protocol.getLengthAdjustment(), protocol.getInitialBytesToStrip()));
         socketChannel.pipeline().addLast(new ProxyMessageEncoder());
         // 添加心跳检测处理器
-        socketChannel.pipeline().addLast(new IdleStateHandler(protocol.getReaderIdleTime(), protocol.getWriteIdleTime(), protocol.getAllIdleTime()));
+        socketChannel.pipeline().addLast(new IdleStateHandler(protocol.getReadIdleTime(), protocol.getWriteIdleTime(), protocol.getAllIdleTimeSeconds()));
         // 添加自定义消息处理器
         socketChannel.pipeline().addLast(new ProxyTunnelChannelHandler());
     }

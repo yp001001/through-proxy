@@ -14,11 +14,11 @@ import org.noear.solon.annotation.Inject;
 @Component
 public class ProxyConfig {
 
-    @Inject("${neutrino.proxy.protocol}")
+    @Inject("${through.proxy.protocol}")
     private Protocol protocol;
-    @Inject("${neutrino.proxy.tunnel}")
+    @Inject("${through.proxy.tunnel}")
     private Tunnel tunnel;
-    @Inject("${neutrino.proxy.client}")
+    @Inject("${through.proxy.client}")
     private Client client;
 
 
@@ -29,7 +29,8 @@ public class ProxyConfig {
         // 长度偏移量
         private Integer lengthFieldOffset;
         // 长度表示字节数
-        private Integer lengthFieldLenth;
+        private Integer lengthFieldLength;
+        // 处理数据剥离字节数
         private Integer initialBytesToStrip;
         // 长度表示与数据之间的间隔字段
         private Integer lengthAdjustment;
