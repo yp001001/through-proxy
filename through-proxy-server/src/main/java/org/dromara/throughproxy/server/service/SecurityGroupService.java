@@ -46,6 +46,7 @@ public class SecurityGroupService {
         if (NativeDetector.isAotRuntime()) {
             return;
         }
+        if(true) return;
         securityGroupMap.clear();
         List<SecurityGroup> securityGroups = securityGroupMapper.selectList(Wrappers.lambdaQuery(SecurityGroup.class)
                 .eq(SecurityGroup::getEnable, EnableStatusEnum.ENABLE.getStatus()));

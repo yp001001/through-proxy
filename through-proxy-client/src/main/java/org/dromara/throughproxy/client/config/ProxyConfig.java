@@ -21,7 +21,6 @@ public class ProxyConfig {
     @Inject("${through.proxy.client}")
     private Client client;
 
-
     @Data
     public static class Protocol{
         // frame最大长度

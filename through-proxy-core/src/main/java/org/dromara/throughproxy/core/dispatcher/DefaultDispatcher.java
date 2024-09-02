@@ -57,6 +57,7 @@ public class DefaultDispatcher<Context, Data> implements Dispatcher<Context, Dat
         Handler<Context, Data> handler = handlerMap.get(matcher.apply(data));
         if(Objects.isNull(handler)){
             log.warn("proxymessageHandler is error, name is {}", matcher.apply(data));
+            return;
         }
         handler.handle(context, data);
     }

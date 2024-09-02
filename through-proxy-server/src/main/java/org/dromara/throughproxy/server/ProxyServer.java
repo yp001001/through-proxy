@@ -9,7 +9,6 @@ import org.noear.solon.Solon;
  * @create: 2024-09-01 14:59
  **/
 public class ProxyServer {
-
     public static void main(String[] args) {
         Solon.start(ProxyServer.class, args);
     }

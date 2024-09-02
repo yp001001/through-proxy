@@ -1,14 +1,14 @@
 package org.dromara.throughproxy.client.handler;
 
-import com.alibaba.fastjson2.JSON;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.throughproxy.core.Constants;
-import org.dromara.throughproxy.core.ProxyDataTypeEnum;
-import org.dromara.throughproxy.core.ProxyMessage;
-import org.dromara.throughproxy.core.ProxyMessageHandler;
+import org.dromara.throughproxy.client.config.ProxyConfig;
+import org.dromara.throughproxy.core.*;
 import org.dromara.throughproxy.core.dispatcher.Match;
+import org.noear.snack.ONode;
+import org.noear.solon.Solon;
 import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Inject;
 
 /**
  * @program: through-proxy
@@ -21,15 +21,24 @@ import org.noear.solon.annotation.Component;
 @Match(type = Constants.ProxyDataTypeName.AUTH)
 @Component
 public class AuthProxyMessageHandler implements ProxyMessageHandler {
+
+    @Inject
+    private ProxyConfig proxyConfig;
+
     @Override
     public void handle(ChannelHandlerContext channelHandlerContext, ProxyMessage proxyMessage) {
-//        String info = proxyMessage.getInfo();
-//        String[] splitInfo;
-//        if(StrUtil.isBlank(info) || (splitInfo = info.split(",")).length != 2){
-//            channelHandlerContext.writeAndFlush(ProxyMessage.buildErrMessage(ExceptionEnum.AUTH_ERROR));
-//        }
 
-        log.info("接受到auth响应 data：{}", JSON.toJSONString(proxyMessage));
+        String info = proxyMessage.getInfo();
+        ONode oNode = ONode.load(info);
+        int code = oNode.get("code").getInt();
+        log.info("Auth result:{}", info);
+        if(ExceptionEnum.AUTH_FAILED.getCode().equals(code)){
+            log.info("client auth failed, client stop");
+            channelHandlerContext.channel().close();
+            if(!proxyConfig.getTunnel().getReconnection().getUnlimited()){
+                Solon.stop();
+            }
+        }
 
     }
 

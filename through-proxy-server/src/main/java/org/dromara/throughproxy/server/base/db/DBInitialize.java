@@ -29,6 +29,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class DBInitialize implements EventListener<AppLoadEndEvent> {
+
     private static List<String> initDataTableNameList = Arrays.asList("user", "license", "port_group", "port_pool", "port_mapping", "job_info");
     @Inject
     private DbConfig dbConfig;

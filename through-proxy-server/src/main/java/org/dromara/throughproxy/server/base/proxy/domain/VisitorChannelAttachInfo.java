@@ -6,7 +6,7 @@ import org.dromara.throughproxy.server.constant.NetworkProtocolEnum;
 
 /**
  * @program: through-proxy
- * @description: 被代理端信息
+ * @description:
  * @author: yp
  * @create: 2024-08-31 14:21
  **/

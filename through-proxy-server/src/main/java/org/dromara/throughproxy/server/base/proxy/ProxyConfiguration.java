@@ -4,16 +4,21 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LoggingHandler;
 import org.dromara.throughproxy.core.ProxyDataTypeEnum;
 import org.dromara.throughproxy.core.ProxyMessage;
 import org.dromara.throughproxy.core.dispatcher.DefaultDispatcher;
 import org.dromara.throughproxy.core.dispatcher.Dispatcher;
 import org.dromara.throughproxy.server.proxy.core.BytesMetricsHandler;
 import org.dromara.throughproxy.server.proxy.core.TcpVisitorChannelHandler;
+import org.dromara.throughproxy.server.proxy.core.UdpVisitorChannelHandler;
 import org.dromara.throughproxy.server.proxy.security.TcpVisitorSecurityChannelHandler;
+import org.dromara.throughproxy.server.proxy.security.UdpVisitorSecurityChannelHandler;
 import org.dromara.throughproxy.server.proxy.security.VisitorFlowLimiterChannelHandler;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.Bean;
@@ -48,7 +53,7 @@ public class ProxyConfiguration implements LifecycleBean {
     }
 
     /**
-     * 外部与服务端打交道
+     * client端与server端打交道
      *
      * @param tcpServerBossGroup
      * @param tcpServerWorkerGroup
@@ -67,12 +72,47 @@ public class ProxyConfiguration implements LifecycleBean {
                     protected void initChannel(SocketChannel channel) throws Exception {
                         if (null != proxyConfig.getServer().getTcp().getTransferLogEnable()
                                 && proxyConfig.getServer().getTcp().getTransferLogEnable()) {
-                            // channel.pipeline().addFirst(new LoggingHandler(TcpVisitorChannelHandler.class));
+                             channel.pipeline().addFirst(new LoggingHandler(TcpVisitorChannelHandler.class));
                         }
                         channel.pipeline().addFirst(new BytesMetricsHandler());
                         channel.pipeline().addLast(new TcpVisitorSecurityChannelHandler());
                         channel.pipeline().addLast("flowLimiter", new VisitorFlowLimiterChannelHandler());
                         channel.pipeline().addLast(new TcpVisitorChannelHandler());
+                    }
+                });
+        return bootstrap;
+    }
+
+
+    @Bean("udpServerBossGroup")
+    public NioEventLoopGroup udpServerBossGroup(@Inject ProxyConfig proxyConfig){
+        return new NioEventLoopGroup(proxyConfig.getServer().getUdp().getBossThreadCount());
+    }
+
+    @Bean("udpServerWorkerGroup")
+    public NioEventLoopGroup udpServerWorkerGroup(@Inject ProxyConfig proxyConfig){
+        return new NioEventLoopGroup(proxyConfig.getServer().getUdp().getWorkThreadCount());
+    }
+
+    @Bean("udpServerBootstrap")
+    public Bootstrap udpServerBootstarp(@Inject("udpServerBossGroup") NioEventLoopGroup udpServerBossGroup,
+                                        @Inject("udpServerWorkerGroup") NioEventLoopGroup udpServerWorkerGroup,
+                                        @Inject ProxyConfig proxyConfig){
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(udpServerBossGroup)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, true)
+                .option(ChannelOption.SO_RCVBUF, 2048 * 1024)
+                .option(ChannelOption.SO_SNDBUF, 1024 * 1024)
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
+                    @Override
+                    protected void initChannel(NioDatagramChannel ch) throws Exception {
+                        if(null != proxyConfig.getServer().getUdp().getTransferLogEnable() && proxyConfig.getServer().getUdp().getTransferLogEnable()){
+                            ch.pipeline().addFirst(new LoggingHandler(UdpVisitorChannelHandler.class));
+                        }
+                        ch.pipeline().addLast(udpServerWorkerGroup, new UdpVisitorSecurityChannelHandler());
+                        ch.pipeline().addLast("flowLimiter", new VisitorFlowLimiterChannelHandler());
+                        ch.pipeline().addLast(udpServerWorkerGroup, new UdpVisitorChannelHandler());
                     }
                 });
         return bootstrap;

@@ -1,14 +1,14 @@
 package org.dromara.throughproxy.server.base.db;
 
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
-import com.baomidou.mybatisplus.solon.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.solon.plugins.inner.PaginationInnerInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.solon.annotation.Db;
 import org.dromara.throughproxy.server.constant.DbTypeEnum;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
+import com.baomidou.mybatisplus.solon.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.solon.plugins.inner.PaginationInnerInterceptor;
 import org.noear.solon.annotation.Inject;
 
 import javax.sql.DataSource;

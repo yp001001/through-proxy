@@ -11,8 +11,10 @@ import org.dromara.throughproxy.server.dal.UserMapper;
 import org.dromara.throughproxy.server.dal.entity.License;
 import org.dromara.throughproxy.server.util.StringUtil;
 import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Init;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.bean.LifecycleBean;
+import org.noear.solon.core.runtime.NativeDetector;
 
 ;
 
@@ -36,6 +38,24 @@ public class LicenseService implements LifecycleBean {
     private DBInitialize dbInitialize;
     // 流量限制缓存
     private final Cache<Integer, FlowLimitBO> flowLimitCache = CacheUtil.newLRUCache(200, 1000 * 60 * 5);
+
+    @Init
+    public void init(){
+        // aot阶段，不初始化
+        if(NativeDetector.isAotRuntime()){
+            return;
+        }
+        // 服务刚启动，默认所有license都是离线状态，解决服务突然关闭，在线状态来不及更新的问题
+//        licenseMapper.updateOnlineStatus(OnlineStatusEnum.OFFLINE.getStatus(), new Date());
+        // 刷新流量限制缓存
+//        List<License> licenseList = licenseMapper.listAll();
+//        if(!CollectionUtils.isEmpty(licenseList)){
+//            for (License license : licenseList) {
+//                refreshFlowLimitCache(license.getId(), license.getUpLimitRate(), license.getDownLimitRate());
+//            }
+//        }
+    }
+
 
     @Override
     public void start() throws Throwable {

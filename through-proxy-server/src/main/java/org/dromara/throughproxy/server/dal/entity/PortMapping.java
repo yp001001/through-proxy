@@ -25,13 +25,14 @@ public class PortMapping {
 
     private Integer licenseId;
 
+    // 服务端端口
+    private Integer serverPort;
+
     private String protocol;
 
     // 子域名
     private String subdomain;
 
-    // 服务端端口
-    private Integer serverPort;
 
     // 客户端ip
     private String clientIp;
@@ -52,16 +53,16 @@ public class PortMapping {
     private Integer isOnline;
 
     // 代理响应数量
-    private Integer proxtResponses;
+    private Integer proxyResponses;
 
     // 代理超时时间
     private Long proxyTimeoutMs;
 
-    // 启用状态
-    private Integer enable;
-
     // 安全组Id
     private Integer securityGroupId;
+
+    // 启用状态
+    private Integer enable;
 
     // 创建时间
     private Date createTime;

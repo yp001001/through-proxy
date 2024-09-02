@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.throughproxy.client.config.ProxyConfig;
@@ -12,7 +11,6 @@ import org.dromara.throughproxy.core.Constants;
 import org.dromara.throughproxy.core.ProxyMessage;
 import org.dromara.throughproxy.core.dispatcher.Dispatcher;
 import org.noear.solon.Solon;
-import org.noear.solon.proxy.ProxyUtil;
 
 import java.util.Objects;
 
@@ -73,11 +71,11 @@ public class CmdChannelHandler extends SimpleChannelInboundHandler<ProxyMessage>
             switch (idleStateEvent.state()){
                 case READER_IDLE:
                     log.error("[CMD Channel] Read timeout disconnect");
-//                    ctx.channel().close();
+                    ctx.channel().close();
                     break;
                 case WRITER_IDLE:
                     // 发送心跳防止读超时
-//                    ctx.channel().writeAndFlush(ProxyMessage.buildHeartbeatMessage());
+                    ctx.channel().writeAndFlush(ProxyMessage.buildHeartbeatMessage());
                     break;
                 default:
                     log.error("[CMD Channel] ReadWrite timeout disconnect");

@@ -76,7 +76,7 @@ public class ProxyTunnelServer implements EventListener<AppLoadEndEvent> {
 
     private void proxyServerCommonInitHandler(SocketChannel socketChannel) {
         if (Objects.nonNull(proxyConfig.getTunnel().getTransferLogEnable()) && proxyConfig.getTunnel().getTransferLogEnable()) {
-            socketChannel.pipeline().addFirst(new LoggingHandler(ProxyTunnelServer.class));
+            socketChannel.pipeline().addFirst(new LoggingHandler(ProxyTunnelChannelHandler.class));
         }
         // 添加编解码处理器
         ProxyConfig.Protocol protocol = proxyConfig.getProtocol();
