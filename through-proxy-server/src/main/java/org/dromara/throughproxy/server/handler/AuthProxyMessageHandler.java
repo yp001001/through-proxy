@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.solon.annotation.Db;
 import org.dromara.throughproxy.core.*;
 import org.dromara.throughproxy.core.dispatcher.Match;
 import org.dromara.throughproxy.server.constant.ClientConnectTypeEnum;

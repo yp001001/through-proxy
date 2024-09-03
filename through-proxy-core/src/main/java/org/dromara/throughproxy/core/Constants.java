@@ -15,6 +15,10 @@ public interface Constants {
     AttributeKey<Integer> SERVER_PORT = AttributeKey.newInstance("serverPort");
     AttributeKey<Boolean> FLOW_LIMITER_FLAG = AttributeKey.newInstance("flowLimiterFlag");
 
+    AttributeKey<String> VISITOR_ID = AttributeKey.newInstance("visitor_id");
+    AttributeKey<Integer> LICENSE_ID = AttributeKey.newInstance("license_id");
+
+
     int BYTE_LENGTH = 1;
     int SERIALNUMBER_LENGTH = 8;
 

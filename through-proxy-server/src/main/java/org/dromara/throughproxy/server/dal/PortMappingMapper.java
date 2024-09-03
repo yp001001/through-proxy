@@ -29,7 +29,7 @@ public interface PortMappingMapper extends BaseMapper<PortMapping> {
     }
 
     default PortMapping findById(Integer id) {
-        return this.findById(id);
+        return this.selectById(id);
     }
 
     default List<PortMapping> findListByServerPort(Integer serverPort) {

@@ -37,7 +37,7 @@ public class ProxyUtil {
     private static Map<Integer, Channel> serverPortToCmdChannelMap = new ConcurrentHashMap<>();
 
     /**
-     * 代理信息映射
+     * 代理信息映射  serverport - clientIp:clientPort
      */
     private static final Map<Integer, String> proxyInfoMap = new ConcurrentHashMap<>();
 
@@ -60,9 +60,7 @@ public class ProxyUtil {
      * cmdChannelAttachInfo.getUserChannelMap() 读写锁
      */
     private static final ReadWriteLock userChannelMapLock = new ReentrantReadWriteLock();
-// 1 < s - ms
-// s - 1 < ms
-    // s < s
+
     /**
      * 服务端口 -> 访问通道映射
 	 */
@@ -100,7 +98,7 @@ public class ProxyUtil {
 
 
     /**
-     * 增加用户连接与被代理客户端连接关系
+     * 外部连接与被代理客户端连接关系
      *
      * @param networkProtocol
      * @param cmdChannel
@@ -227,5 +225,25 @@ public class ProxyUtil {
         }
 
         licenseToCmdChannelMap.put(licenseId, cmdChannel);
+    }
+
+    /**
+     * 根据代理客户端连接与用户编号获取用户连接
+     * @param cmdChannel
+     * @param visitorId
+     * @return
+     */
+    public static Channel getVisitorChannel(Channel cmdChannel, String visitorId) {
+        if (null == cmdChannel || null == getAttachInfo(cmdChannel)) {
+            return null;
+        }
+        return ((CmdChannelAttachInfo)getAttachInfo(cmdChannel)).getVisitorChannelMap().get(visitorId);
+    }
+
+    public static String getVisitorIdByChannel(Channel channel) {
+        if(null == channel || null == getAttachInfo(channel)){
+            return null;
+        }
+        return ((VisitorChannelAttachInfo)getAttachInfo(channel)).getVisitorId();
     }
 }

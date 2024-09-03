@@ -30,6 +30,8 @@ public class ProxyMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf byteBuf) throws Exception {
+        byteBuf = (ByteBuf) super.decode(ctx, byteBuf);
+
         int bodyLength = byteBuf.readInt();
 
         ProxyMessage proxyMessage = new ProxyMessage();

@@ -11,4 +11,7 @@ import org.dromara.throughproxy.server.dal.entity.User;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
+    default User queryById(Integer userId){
+        return this.selectById(userId);
+    }
 }

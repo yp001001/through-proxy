@@ -8,6 +8,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.dromara.throughproxy.client.core.CmdChannelHandler;
+import org.dromara.throughproxy.client.core.RealServerChannelHandler;
+import org.dromara.throughproxy.client.core.TcpProxyChannelHandler;
 import org.dromara.throughproxy.core.*;
 import org.dromara.throughproxy.core.dispatcher.DefaultDispatcher;
 import org.dromara.throughproxy.core.dispatcher.Dispatcher;
@@ -51,7 +53,7 @@ public class ProxyConfiguration implements LifecycleBean {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel channel) throws Exception {
-                        if(proxyConfig.getTunnel().getTransferLogEnable() != null && proxyConfig.getTunnel().getTransferLogEnable()){
+                        if (proxyConfig.getTunnel().getTransferLogEnable() != null && proxyConfig.getTunnel().getTransferLogEnable()) {
                             channel.pipeline().addFirst(new LoggingHandler(CmdChannelHandler.class));
                         }
                         channel.pipeline().addLast(new ProxyMessageDecoder(proxyConfig.getProtocol().getMaxFrameLength(),
@@ -67,5 +69,56 @@ public class ProxyConfiguration implements LifecycleBean {
         return bootstrap;
     }
 
+    @Bean("tcpRealServerWorkGroup")
+    public NioEventLoopGroup tcpRealServerWorkGroup() {
+        return new NioEventLoopGroup();
+    }
+
+    @Bean("realServerBootstrap")
+    public Bootstrap realServerBootstrap(@Inject ProxyConfig proxyConfig,
+                                         @Inject("tcpRealServerWorkGroup") NioEventLoopGroup tcpRealServerWorkGroup) {
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(tcpRealServerWorkGroup)
+                .channel(NioSocketChannel.class)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel ch) throws Exception {
+                        if (null != proxyConfig.getTunnel().getTransferLogEnable()
+                                && proxyConfig.getTunnel().getTransferLogEnable()) {
+                            ch.pipeline().addFirst(new LoggingHandler(RealServerChannelHandler.class));
+                        }
+                        ch.pipeline().addLast(new RealServerChannelHandler());
+                    }
+                });
+        return bootstrap;
+    }
+
+    @Bean("tcpProxyTunnelBootstrap")
+    public Bootstrap tcpProxyTunnelBootstrap(@Inject ProxyConfig proxyConfig,
+                                             @Inject("tunnelWorkerGroup") NioEventLoopGroup tunnelWorkerGroup){
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(tunnelWorkerGroup);
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.remoteAddress(InetSocketAddress.createUnresolved(proxyConfig.getTunnel().getServerIp(), proxyConfig.getTunnel().getServerPort()));
+        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                if (proxyConfig.getTunnel().getSslEnable()) {
+                    // ch.pipeline().addLast(ProxyUtil.createSslHandler(proxyConfig));
+                }
+                if (null != proxyConfig.getTunnel().getTransferLogEnable() && proxyConfig.getTunnel().getTransferLogEnable()) {
+                    ch.pipeline().addFirst(new LoggingHandler(TcpProxyChannelHandler.class));
+                }
+                ch.pipeline().addLast(new ProxyMessageDecoder(proxyConfig.getProtocol().getMaxFrameLength(),
+                        proxyConfig.getProtocol().getLengthFieldOffset(), proxyConfig.getProtocol().getLengthFieldLength(),
+                        proxyConfig.getProtocol().getLengthAdjustment(), proxyConfig.getProtocol().getInitialBytesToStrip()));
+                ch.pipeline().addLast(new ProxyMessageEncoder());
+                ch.pipeline().addLast(new IdleStateHandler(proxyConfig.getProtocol().getReadIdleTime(), proxyConfig.getProtocol().getWriteIdleTime(), proxyConfig.getProtocol().getAllIdleTimeSeconds()));
+                ch.pipeline().addLast(new TcpProxyChannelHandler());
+            }
+        });
+        return bootstrap;
+    }
 
 }

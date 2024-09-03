@@ -94,4 +94,8 @@ public class LicenseService implements LifecycleBean {
                 .setDownLimitRate(StringUtil.parseBytes(downLimitRate))
         );
     }
+
+    public License queryByKey(String licenseKey) {
+        return licenseMapper.queryByLicenseKey(licenseKey);
+    }
 }
