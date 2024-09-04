@@ -62,6 +62,6 @@ through:
         boss-thread-count: 5
         work-thread-count: 20
         # udp傀儡端口范围
-        puppet-port-range: 10000-10500
+        puppet-port-range: 10050-10500
         # 是否开启隧道传输报文日志(日志级别为debug时开启才有效)
         transfer-log-enable: ${CLIENT_LOG:false}

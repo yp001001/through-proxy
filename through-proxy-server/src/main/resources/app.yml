@@ -104,10 +104,10 @@ solon.staticfiles.mappings:
 
 mybatis.db:
   typeAliases:    #支持包名 或 类名（大写开头 或 *）//支持 ** 或 * 占位符
-    - "org.dromara.throughproxy.server.dal.entity"
+    - "org.dromara.yp.server.dal.entity"
   mappers:        #支持包名 或 类名（大写开头 或 *）或 xml（.xml结尾）//支持 ** 或 * 占位符
     - "classpath:mapper/*.xml"
-    - "org.dromara.throughproxy.server.dal"
+    - "org.yp.throughproxy.server.dal"
   configuration:   #扩展配置（要与 MybatisConfiguration 类的属性一一对应）
     cacheEnabled: false
     mapUnderscoreToCamelCase: true
