@@ -8,6 +8,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 import org.yp.throughproxy.client.config.ProxyConfig;
+import org.yp.throughproxy.client.util.ProxyUtil;
 import org.yp.throughproxy.core.Constants;
 import org.yp.throughproxy.core.ProxyMessage;
 import org.yp.throughproxy.core.dispatcher.Dispatcher;
@@ -41,10 +42,12 @@ public class CmdChannelHandler extends SimpleChannelInboundHandler<ProxyMessage>
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        // TODO:被代理端断开连接
         log.info("[CMD Channel]Client CmdChannel disconnect");
-//        ProxyUtil.setCmdChannel(null);
-//        ProxyUtil.clearRealServerChannels();
+
+        ProxyUtil.setCmdChannel(null);
+        // 关闭所有的代理
+        ProxyUtil.clearRealServerChannels();
+
         super.channelInactive(ctx);
     }
 

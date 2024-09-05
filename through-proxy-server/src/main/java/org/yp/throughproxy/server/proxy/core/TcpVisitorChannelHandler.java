@@ -96,6 +96,48 @@ public class TcpVisitorChannelHandler extends SimpleChannelInboundHandler<ByteBu
         // TODO: 增加流量计数
     }
 
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+
+        Channel visitorChannel = ctx.channel();
+        InetSocketAddress localAddress = (InetSocketAddress) visitorChannel.localAddress();
+
+        Channel cmdChannel = ProxyUtil.getCmdChannelByServerPort(localAddress.getPort());
+
+        if(Objects.isNull(cmdChannel)){
+            // 表示暂时没有代理
+            visitorChannel.close();
+            return;
+        }
+
+        String visitorId = visitorChannel.attr(Constants.VISITOR_ID).get();
+
+        ProxyUtil.removeVisitorChannelFromCmdChannel(cmdChannel, visitorId);
+
+        // 删除代理附加对象 基于UDP
+        ProxyUtil.removeProxyConnectAttachment(visitorId);
+
+        Channel proxyChannel = visitorChannel.attr(Constants.NEXT_CHANNEL).get();
+        if(Objects.isNull(proxyChannel) || !proxyChannel.isActive()){
+            visitorChannel.close();
+            return;
+        }
+
+        proxyChannel.attr(Constants.VISITOR_ID).remove();
+        proxyChannel.attr(Constants.LICENSE_ID).remove();
+        proxyChannel.attr(Constants.NEXT_CHANNEL).remove();
+
+        proxyChannel.config().setOption(ChannelOption.AUTO_READ, true);
+        // 通知代理客户端，用户连接已断开，通知被代理服务断开连接
+        proxyChannel.writeAndFlush(ProxyMessage.buildDisconnectMessage(visitorId));
+
+        // todo => ???
+        visitorChannel.close();
+
+        super.channelInactive(ctx);
+    }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error("VisitorChannel error", cause);

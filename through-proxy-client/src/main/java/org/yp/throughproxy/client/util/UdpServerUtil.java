@@ -142,8 +142,8 @@ public class UdpServerUtil {
                     iter.remove();
                     UdpChannelBindInfo udpChannelBindInfo = lockChannel.getChannel().attr(Constants.UDP_CHANNEL_BIND_KEY).get();
                     // 此处必须释放代理隧道
-//                    closeChannel(udpChannelBindInfo.getTunnelChannel());
-//                    lockChannel.getChannel().attr(Constants.UDP_CHANNEL_BIND_KEY).set(null);
+                    closeChannel(udpChannelBindInfo.getTunnelChannel());
+                    lockChannel.getChannel().attr(Constants.UDP_CHANNEL_BIND_KEY).set(null);
                     udpServerFreePortPool.offer(lockChannel.getPort());
                     log.debug("[udp channel]release udp channel port:{}", lockChannel.getPort());
                 }
@@ -165,9 +165,9 @@ public class UdpServerUtil {
      * @return
      */
     public static synchronized Channel takeChannel(ProxyMessage.UdpBaseInfo info, Channel tunnelChannel){
-//        if(info.getProxyResponses() <= 0 || info.getProxyTimeoutMs() <= 0){
-//            return defaultUdpServerChannel;
-//        }
+        if(info.getProxyResponses() <= 0 || info.getProxyTimeoutMs() <= 0){
+            return defaultUdpServerChannel;
+        }
         Integer port = udpServerFreePortPool.poll();
         if(null == port){
             return defaultUdpServerChannel;

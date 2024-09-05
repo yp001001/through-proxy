@@ -47,6 +47,12 @@ public class AuthProxyMessageHandler implements ProxyMessageHandler {
     @Inject
     private ClientConnectRecordService clientConnectRecordService;
 
+    /**
+     * 代理客户端连接代理服务端之后，处理代理客户端发送的Auth请求
+     * 初始化对应的licenseKey的端口，将cmdChannel映射licenseId
+     * @param ctx
+     * @param proxyMessage
+     */
     @Override
     public void handle(ChannelHandlerContext ctx, ProxyMessage proxyMessage) {
         String ip = ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress();

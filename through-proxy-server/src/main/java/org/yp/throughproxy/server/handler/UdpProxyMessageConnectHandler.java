@@ -90,6 +90,7 @@ public class UdpProxyMessageConnectHandler implements ProxyMessageHandler {
         ctx.channel().attr(Constants.PROXY_RESPONSES).set(portMapping.getProxyResponses());
         ctx.channel().attr(Constants.PROXY_TIMEOUT_MS).set(portMapping.getProxyTimeoutMs());
         visitorChannel.attr(Constants.NEXT_CHANNEL).set(ctx.channel());
+        visitorChannel.attr(Constants.IS_UDP_KEY).set(Boolean.TRUE);
 
         ProxyAttachment proxyAttachment = ProxyUtil.getProxyConnectAttachment(udpBaseInfo.getVisitorId());
         if (null != proxyAttachment) {

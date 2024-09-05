@@ -1,8 +1,10 @@
 package org.yp.throughproxy.client.util;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.noear.solon.Solon;
@@ -36,6 +38,8 @@ public class ProxyUtil {
     private static ConcurrentLinkedQueue<Channel> udpProxyChannelPool = new ConcurrentLinkedQueue<>();
 
     private static Map<String, Channel> realServerChannels = new ConcurrentHashMap<>();
+
+    private static final int MAX_POOL_SIZE = 100;
 
     public static String getClientId() {
         if (StringUtils.isNotBlank(clientId)) {
@@ -111,4 +115,31 @@ public class ProxyUtil {
         return channel.attr(Constants.VISITOR_ID).get();
     }
 
+    public static void returnTcpProxyChannel(Channel channel) {
+        if (tcpProxyChannelPool.size() > MAX_POOL_SIZE) {
+            channel.close();
+        } else {
+            // 复用与代理服务端的channel
+            channel.config().setOption(ChannelOption.AUTO_READ, true);
+            channel.attr(Constants.NEXT_CHANNEL).remove();
+            tcpProxyChannelPool.offer(channel);
+        }
+    }
+
+    public static void removeTcpProxyChannel(Channel channel) {
+        tcpProxyChannelPool.remove(channel);
+    }
+
+    public static Channel removeRealServerChannel(String visitorId) {
+        return realServerChannels.remove(visitorId);
+    }
+
+    public static void clearRealServerChannels() {
+        for (String visitorId : realServerChannels.keySet()) {
+            Channel realSeverChannel = realServerChannels.get(visitorId);
+            if (null != realSeverChannel && realSeverChannel.isActive()) {
+                realSeverChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+            }
+        }
+    }
 }

@@ -68,7 +68,7 @@ public class ProxyUtil {
     private static Map<Integer, Channel> serverPortToVisitorChannel = new ConcurrentHashMap<>();
 
     /**
-     * 代理 - connect附加映射
+     * udp 代理 - connect附加映射
      */
     private static Map<String, ProxyAttachment> proxyConnectAttachmentMap = new HashMap<>();
 
@@ -268,5 +268,50 @@ public class ProxyUtil {
 
     public static void removeProxyConnectAttachment(String visitorId) {
         proxyConnectAttachmentMap.remove(visitorId);
+    }
+
+    /**
+     * 代理客户端中的channel关闭
+     * @param cmdChannel
+     * @param visitorId
+     * @return
+     */
+    public static Channel removeVisitorChannelFromCmdChannel(Channel cmdChannel, String visitorId) {
+        if (null == getAttachInfo(cmdChannel) || null == ((CmdChannelAttachInfo) getAttachInfo(cmdChannel)).getVisitorChannelMap().get(visitorId)) {
+            return null;
+        }
+
+        try {
+            userChannelMapLock.writeLock().lock();
+            return ((CmdChannelAttachInfo)getAttachInfo(cmdChannel)).getVisitorChannelMap().remove(visitorId);
+        }finally {
+            userChannelMapLock.writeLock().unlock();
+        }
+    }
+
+    public static void removeCmdChannel(Channel cmdChannel) {
+
+        if(Objects.isNull(cmdChannel) || null == getAttachInfo(cmdChannel)) {
+            return;
+        }
+
+        CmdChannelAttachInfo cmdChannelAttachInfo = getAttachInfo(cmdChannel);
+
+        for (Integer serverPort : cmdChannelAttachInfo.getServerPorts()) {
+            serverPortToCmdChannelMap.remove(serverPort);
+        }
+
+        Map<String, Channel> visitorChannelMap = cmdChannelAttachInfo.getVisitorChannelMap();
+        for (String visitorId : visitorChannelMap.keySet()) {
+            Channel visitorChannel = visitorChannelMap.get(visitorId);
+            if(null != visitorChannel && visitorChannel.isActive()){
+                visitorChannel.close();
+            }
+        }
+        cmdChannelAttachInfo.getVisitorChannelMap().clear();
+    }
+
+    public static void removeClientIdByLicenseId(Integer licenseId) {
+        licenseIdClientIdMap.remove(licenseId);
     }
 }

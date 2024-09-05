@@ -25,6 +25,8 @@ public interface Constants {
     AttributeKey<Integer> PROXY_RESPONSES = AttributeKey.newInstance("proxyResponses");
     AttributeKey<Long> PROXY_TIMEOUT_MS = AttributeKey.newInstance("proxyTimeoutMs");
 
+    // 临时解决 udp channel被close的问题
+    AttributeKey<Boolean> IS_UDP_KEY =  AttributeKey.newInstance("isUdp");
     AttributeKey<InetSocketAddress> SENDER = AttributeKey.newInstance("sender");
 
 

@@ -18,7 +18,6 @@ public class Server {
     }
 
 
-
     public static void startServer() throws InterruptedException {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(new NioEventLoopGroup(), new NioEventLoopGroup())

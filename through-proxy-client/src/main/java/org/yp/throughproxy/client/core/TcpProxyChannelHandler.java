@@ -1,12 +1,17 @@
 package org.yp.throughproxy.client.core;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
+import org.yp.throughproxy.client.util.ProxyUtil;
+import org.yp.throughproxy.core.Constants;
 import org.yp.throughproxy.core.ProxyMessage;
 import org.yp.throughproxy.core.dispatcher.Dispatcher;
+
+import java.util.Objects;
 
 /**
  * @author: yp
@@ -32,7 +37,17 @@ public class TcpProxyChannelHandler extends SimpleChannelInboundHandler<ProxyMes
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        // TODO
+
+        Channel realServerChannel = ctx.channel().attr(Constants.NEXT_CHANNEL).get();
+        if(Objects.nonNull(realServerChannel)){
+            realServerChannel.close();
+        }
+
+        ProxyUtil.removeTcpProxyChannel(ctx.channel());
+
+        // todo: ???
+        ctx.channel().close();
+
         super.channelInactive(ctx);
     }
 

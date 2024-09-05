@@ -19,6 +19,7 @@ public enum ProxyDataTypeEnum {
 
     HEARTBEAT(0x01, Constants.ProxyDataTypeName.HEARTBEAT, "HEARTBEAT"),
     AUTH(0x02, Constants.ProxyDataTypeName.AUTH, "AUTH"),
+    DISCONNECT(0x04, Constants.ProxyDataTypeName.DISCONNECT,"DISCONNECT"),
     CONNECT(0x03, Constants.ProxyDataTypeName.CONNECT, "CONNECT"),
     TRANSFER(0x05, Constants.ProxyDataTypeName.TRANSFER,"TRANSFER"),
     UDP_CONNECT(0x08, Constants.ProxyDataTypeName.UDP_CONNECT,"UDP_CONNECT"),

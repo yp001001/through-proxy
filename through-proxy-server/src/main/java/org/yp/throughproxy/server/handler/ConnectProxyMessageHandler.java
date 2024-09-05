@@ -94,6 +94,7 @@ public class ConnectProxyMessageHandler implements ProxyMessageHandler {
         ctx.channel().attr(Constants.NEXT_CHANNEL).set(visitorChannel);
         visitorChannel.attr(Constants.NEXT_CHANNEL).set(ctx.channel());
         visitorChannel.attr(Constants.LICENSE_ID).set(license.getId());
+        visitorChannel.attr(Constants.VISITOR_ID).set(visitorId);
         // 代理客户端与后端服务器连接成功，修改用户连接为可读状态
         visitorChannel.config().setOption(ChannelOption.AUTO_READ, true);
 
