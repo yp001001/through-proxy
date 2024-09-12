@@ -73,6 +73,11 @@ public class ProxyUtil {
     private static Map<String, ProxyAttachment> proxyConnectAttachmentMap = new HashMap<>();
 
     /**
+     * 子域名 - 服务端端口映射
+     */
+    private static Map<String, Integer> subdomainToServerPort = new HashMap<>();
+
+    /**
      * 获取服务端对应的被代理端channel
      *
      * @param serverPort
@@ -314,4 +319,14 @@ public class ProxyUtil {
     public static void removeClientIdByLicenseId(Integer licenseId) {
         licenseIdClientIdMap.remove(licenseId);
     }
+
+    /**
+     * 根据子域名获取外网端口
+     * @param subdomain
+     * @return
+     */
+    public static Integer getServerPortBySubdomain(String subdomain) {
+        return subdomainToServerPort.get(subdomain);
+    }
+
 }

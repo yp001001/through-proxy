@@ -65,56 +65,56 @@ public class ProxyTunnelChannelHandler extends SimpleChannelInboundHandler<Proxy
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 
-        Channel visitorChannel = ctx.channel().attr(Constants.NEXT_CHANNEL).get();
-        // 表示用于被代理端口之间通信的channel断开
-        if (Objects.nonNull(visitorChannel)) {
-
-            String visitorId = visitorChannel.attr(Constants.VISITOR_ID).get();
-            Integer licenseId = visitorChannel.attr(Constants.LICENSE_ID).get();
-
-            // 获取代理客户端（非Auth）中与代理服务端连接的通信通道
-            Channel cmdChannel = ProxyUtil.getCmdChannelByLicenseId(licenseId);
-
-            if(Objects.nonNull(cmdChannel)){
-                ProxyUtil.removeVisitorChannelFromCmdChannel(cmdChannel, visitorId);
-            }
-
-            ProxyUtil.removeProxyConnectAttachment(visitorId);
-
-            Boolean isUdp = visitorChannel.attr(Constants.IS_UDP_KEY).get();
-            if(visitorChannel.isActive() && null == isUdp){
-                // 数据发送完成之后再关闭连接，解决http1.0数据传输问题
-                visitorChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-            }
-
-        } else {
-            // 此时就应该是cmdChannel断开
-            CmdChannelAttachInfo cmdChannelAttachInfo = ProxyUtil.getAttachInfo(ctx.channel());
-
-            if(Objects.nonNull(cmdChannelAttachInfo)){
-                Channel cmdChannel = ProxyUtil.getCmdChannelByLicenseId(cmdChannelAttachInfo.getLicenseId());
-                // 表示代理客户端与代理服务端断开连接
-                if(cmdChannel == ctx.channel()){
-                    // 删除关于cmdChannel的所有数据
-                    ProxyUtil.removeCmdChannel(cmdChannel);
-                    // 删除license
-                    ProxyUtil.removeClientIdByLicenseId(cmdChannelAttachInfo.getLicenseId());
-                }
-            }
-
-            // 即便是因为上述原因断开，断开的日志依然要记录，方便排查问题
-            Solon.context().getBean(ClientConnectRecordService.class).add(new ClientConnectRecord()
-                    .setIp(((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress())
-                    .setLicenseId(cmdChannelAttachInfo.getLicenseId())
-                    .setType(ClientConnectTypeEnum.DISCONNECT.getType())
-                    .setMsg("")
-                    .setCode(SuccessCodeEnum.SUCCESS.getCode())
-                    .setCreateTime(new Date())
-            );
-        }
-
-
-        super.channelInactive(ctx);
+//        Channel visitorChannel = ctx.channel().attr(Constants.NEXT_CHANNEL).get();
+//        // 表示用于被代理端口之间通信的channel断开
+//        if (Objects.nonNull(visitorChannel)) {
+//
+//            String visitorId = visitorChannel.attr(Constants.VISITOR_ID).get();
+//            Integer licenseId = visitorChannel.attr(Constants.LICENSE_ID).get();
+//
+//            // 获取代理客户端（非Auth）中与代理服务端连接的通信通道
+//            Channel cmdChannel = ProxyUtil.getCmdChannelByLicenseId(licenseId);
+//
+//            if(Objects.nonNull(cmdChannel)){
+//                ProxyUtil.removeVisitorChannelFromCmdChannel(cmdChannel, visitorId);
+//            }
+//
+//            ProxyUtil.removeProxyConnectAttachment(visitorId);
+//
+//            Boolean isUdp = visitorChannel.attr(Constants.IS_UDP_KEY).get();
+//            if(visitorChannel.isActive() && null == isUdp){
+//                // 数据发送完成之后再关闭连接，解决http1.0数据传输问题
+//                visitorChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+//            }
+//
+//        } else {
+//            // 此时就应该是cmdChannel断开
+//            CmdChannelAttachInfo cmdChannelAttachInfo = ProxyUtil.getAttachInfo(ctx.channel());
+//
+//            if(Objects.nonNull(cmdChannelAttachInfo)){
+//                Channel cmdChannel = ProxyUtil.getCmdChannelByLicenseId(cmdChannelAttachInfo.getLicenseId());
+//                // 表示代理客户端与代理服务端断开连接
+//                if(cmdChannel == ctx.channel()){
+//                    // 删除关于cmdChannel的所有数据
+//                    ProxyUtil.removeCmdChannel(cmdChannel);
+//                    // 删除license
+//                    ProxyUtil.removeClientIdByLicenseId(cmdChannelAttachInfo.getLicenseId());
+//                }
+//            }
+//
+//            // 即便是因为上述原因断开，断开的日志依然要记录，方便排查问题
+//            Solon.context().getBean(ClientConnectRecordService.class).add(new ClientConnectRecord()
+//                    .setIp(((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress())
+//                    .setLicenseId(cmdChannelAttachInfo.getLicenseId())
+//                    .setType(ClientConnectTypeEnum.DISCONNECT.getType())
+//                    .setMsg("")
+//                    .setCode(SuccessCodeEnum.SUCCESS.getCode())
+//                    .setCreateTime(new Date())
+//            );
+//        }
+//
+//
+//        super.channelInactive(ctx);
     }
 
 

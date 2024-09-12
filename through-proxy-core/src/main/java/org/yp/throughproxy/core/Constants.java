@@ -29,6 +29,8 @@ public interface Constants {
     AttributeKey<Boolean> IS_UDP_KEY =  AttributeKey.newInstance("isUdp");
     AttributeKey<InetSocketAddress> SENDER = AttributeKey.newInstance("sender");
 
+    AttributeKey<String> REAL_REMOTE_IP = AttributeKey.newInstance("realRemoteIp");
+
 
     int BYTE_LENGTH = 1;
     int SERIALNUMBER_LENGTH = 8;

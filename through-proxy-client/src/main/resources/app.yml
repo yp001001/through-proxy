@@ -1,3 +1,6 @@
+server:
+  # 服务端web端口，用于支持HTTP接口，管理后台页面访问
+  port: ${WEB_PORT:8889}
 solon:
   config:
     add: ./app.yml
@@ -37,7 +40,7 @@ through:
       key-store-password: ${STORE_PASS:123456}
       jks-path: ${JKS_PATH:classpath:/test.jks}
       # 服务端IP
-      server-ip: ${SERVER_IP:localhost}
+      server-ip: ${SERVER_IP:117.72.43.162}
       # 服务端端口(对应服务端app.yml中的tunnel.port、tunnel.ssl-port)
       server-port: ${SERVER_PORT:9002}
       # 是否启用SSL(注意：该配置必须和server-port对应上)
