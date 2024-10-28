@@ -91,6 +91,11 @@ through:
       username: root
       # 数据库密码
       password: yp20000930
+      minimum-idle: 10
+      maximum-pool-size: 30
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
 #添加MIME印射（如果有需要？）
 #是否启用静态文件服务。（可不配，默认为启用）
